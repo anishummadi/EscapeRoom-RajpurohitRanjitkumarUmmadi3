@@ -503,4 +503,31 @@ public class GameGUI extends JComponent
     return score;
   
   }
+  // Add this method to the GameGUI class
+
+/**
+ * Updates the player's position on the game board.
+ * <P>
+ * precondition: x and y must be within the grid bounds
+ * <P>
+ * @param x new x coordinate of the player
+ * @param y new y coordinate of the player
+ */
+public void updatePlayerPosition(int newX, int newY) {
+  // Set the new player location
+  this.x = newX;
+  this.y = newY;
+
+  // Ensure the player is within grid bounds
+  if (this.x < 0) this.x = 0;
+  if (this.x > WIDTH - SPACE_SIZE) this.x = WIDTH - SPACE_SIZE;
+  if (this.y < 0) this.y = 0;
+  if (this.y > HEIGHT - SPACE_SIZE) this.y = HEIGHT - SPACE_SIZE;
+
+  // Save the updated location
+  playerLoc.setLocation(this.x, this.y);
+
+  // Repaint the component to reflect the updated position
+  repaint();
+}
 }
