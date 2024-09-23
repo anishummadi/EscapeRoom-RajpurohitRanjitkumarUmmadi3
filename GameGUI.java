@@ -19,6 +19,17 @@ import java.util.Random;
  * @author PLTW
  * @version 1.0
  */
+/**
+ * This class represents a Game Board for an Escape Room game.
+ * It initializes the game frame, renders the player, walls, traps, 
+ * and prizes on the grid. It also manages player movements and score tracking.
+ * 
+ * Main features:
+ * - Move the player on the grid while avoiding traps and walls.
+ * - Collect prizes for points.
+ * - Avoid penalties for hitting walls or going off-grid.
+ * - Track player steps and overall performance.
+ */
 public class GameGUI extends JComponent
 {
   static final long serialVersionUID = 141L; // problem 1.4.1
