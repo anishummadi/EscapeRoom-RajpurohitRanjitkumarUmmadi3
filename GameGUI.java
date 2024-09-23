@@ -51,6 +51,8 @@ public class GameGUI extends JComponent
   private Rectangle[] prizes;
   private int totalTraps;
   private Rectangle[] traps;
+  private Image trapImage; 
+  
 
   // scores, sometimes awarded as (negative) penalties
   private int prizeVal = 10;
@@ -68,7 +70,8 @@ public class GameGUI extends JComponent
    */
   public GameGUI()
   {
-    
+    traps = new Rectangle[totalTraps];  // Initialize the traps array
+
     try {
       bgImage = ImageIO.read(new File("grid.png"));      
     } catch (Exception e) {
@@ -86,6 +89,16 @@ public class GameGUI extends JComponent
     } catch (Exception e) {
      System.err.println("Could not open file player.png");
     }
+
+    //trap image
+
+    try {
+      trapImage = ImageIO.read(new File("rock.png"));
+  } catch (Exception e) {
+      System.err.println("Could not open file rock.png");
+  }
+
+
     // save player location
     playerLoc = new Point(x,y);
 
@@ -101,7 +114,7 @@ public class GameGUI extends JComponent
     // set default config
     totalWalls = 20;
     totalPrizes = 3;
-    totalTraps = 5;
+    totalTraps = 2;
   }
 
  /**
@@ -163,6 +176,11 @@ public class GameGUI extends JComponent
           System.out.println("A WALL IS IN THE WAY");
           return -hitWallVal;
         }
+        // Check for traps and apply penalty if on one
+        if (isTrap(incrx, incry)) {
+          System.out.println("You stepped on a trap!");
+          return -trapVal;
+  }
         // moving LEFT, check to the left
         else if ((incrx < 0) && (x >= startX) && (startX >= newX) && (y >= startY) && (y <= endY))
         {
@@ -379,41 +397,46 @@ public class GameGUI extends JComponent
    */
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D)g;
+    Graphics2D g2 = (Graphics2D) g;
 
-    // draw grid
+    // Draw grid
     g.drawImage(bgImage, 0, 0, null);
-
-    // add (invisible) traps
-    for (Rectangle t : traps)
-    {
-      g2.setPaint(Color.WHITE); 
-      g2.fill(t);
-    }
-
-    // add prizes
-    for (Rectangle p : prizes)
-    {
-      // picked up prizes are 0 size so don't render
-      if (p.getWidth() > 0) 
-      {
-      int px = (int)p.getX();
-      int py = (int)p.getY();
-      g.drawImage(prizeImage, px, py, null);
+    for (Rectangle t : traps) {
+      if (t != null && t.getWidth() > 0 && trapImage != null) {  // Check for valid trap and image
+          int tx = (int) t.getX();
+          int ty = (int) t.getY();
+          g.drawImage(trapImage, tx, ty, null);
       }
+  }
+    // Add traps (visible as rock images)
+    for (Rectangle t : traps) {
+        if (t.getWidth() > 0) {  // Only render unsprung traps
+            int tx = (int) t.getX();
+            int ty = (int) t.getY();
+            g.drawImage(trapImage, tx, ty, null);
+        }
     }
 
-    // add walls
-    for (Rectangle r : walls) 
-    {
-      g2.setPaint(Color.BLACK);
-      g2.fill(r);
+    // Add prizes
+    for (Rectangle p : prizes) {
+        if (p.getWidth() > 0) {
+            int px = (int) p.getX();
+            int py = (int) p.getY();
+            g.drawImage(prizeImage, px, py, null);
+        }
     }
-   
-    // draw player, saving its location
-    g.drawImage(player, x, y, 40,40, null);
-    playerLoc.setLocation(x,y);
-  }
+
+    // Add walls
+    for (Rectangle r : walls) {
+        g2.setPaint(Color.BLACK);
+        g2.fill(r);
+    }
+
+    // Draw player and save its location
+    g.drawImage(player, x, y, 40, 40, null);
+    playerLoc.setLocation(x, y);
+}
+
 
   /*------------------- private methods -------------------*/
 
@@ -440,20 +463,32 @@ public class GameGUI extends JComponent
    * Add randomly placed traps to the board. They will be painted white and appear invisible.
    * Note:  prizes and traps may occupy the same location, with traps hiding prizes
    */
-  private void createTraps()
-  {
+  private void createTraps() {
     int s = SPACE_SIZE; 
     Random rand = new Random();
-     for (int numTraps = 0; numTraps < totalTraps; numTraps++)
-     {
-      int h = rand.nextInt(GRID_H);
-      int w = rand.nextInt(GRID_W);
+    
+    for (int numTraps = 0; numTraps < totalTraps; numTraps++) {
+        Rectangle r;
+        boolean validPosition;
 
-      Rectangle r;
-      r = new Rectangle((w*s + 15),(h*s + 15), 15, 15);
-      traps[numTraps] = r;
-     }
-  }
+        do {
+            int h = rand.nextInt(GRID_H);
+            int w = rand.nextInt(GRID_W);
+
+            // Create a new rectangle for the trap
+            r = new Rectangle((w * s + 15), (h * s + 15), 15, 15);
+
+            // Ensure trap is not placed on the starting spot or any prize locations
+            validPosition = !(r.intersects(new Rectangle(START_LOC_X, START_LOC_Y, SPACE_SIZE, SPACE_SIZE)));
+
+            
+
+        } while (!validPosition);
+
+        traps[numTraps] = r;  // Add the valid trap location
+    }
+}
+
 
   /*
    * Add walls to the board in random locations 
