@@ -5,92 +5,95 @@ public class EscapeRoom {
         // Welcome message
         System.out.println("Welcome to EscapeRoom!");
         System.out.println("Get to the other side of the room, avoiding walls and invisible traps,");
-        System.out.println("pick up all the prizes.\n");
+        System.out.println("and pick up all the prizes.\n");
 
         // Create the game board
-        GameGUI game = new GameGUI();  // Use the GameGUI class from the other file
-        game.createBoard();
+        GameGUI gameGUI = new GameGUI();  // Use the GameGUI class from the other file
+        gameGUI.createBoard();
 
         // Size of move and initial player position
-        int m = 60;
-        int score = 0;
+        int moveDistance = 60;
+        int playerScore = 0;
 
         // Scanner for user input
-        Scanner in = new Scanner(System.in);
+        Scanner userInput = new Scanner(System.in);
 
         // Set up game loop
-        boolean play = true;
-        while (play) {
+        boolean isPlaying = true;
+
+        while (isPlaying) {
             System.out.print("Enter a command: ");
-            String command = in.nextLine().toLowerCase();
+            String userCommand = userInput.nextLine().toLowerCase();
 
             // Handle movement commands
-            switch (command) {
-                case "right":
-                case "r":
-                    score += game.movePlayer(m, 0); // Move right
-                    break;
+            switch (userCommand) {
+                
                 case "left":
                 case "l":
-                    score += game.movePlayer(-m, 0); // Move left
+                    playerScore += gameGUI.movePlayer(-moveDistance, 0); // Move left
                     break;
                 case "up":
                 case "u":
-                    score += game.movePlayer(0, -m); // Move up
+                    playerScore += gameGUI.movePlayer(0, -moveDistance); // Move up
                     break;
                 case "down":
                 case "d":
-                    score += game.movePlayer(0, m); // Move down
+                    playerScore += gameGUI.movePlayer(0, moveDistance); // Move down
+                    break;
+                case "right":
+                case "r":
+                    playerScore += gameGUI.movePlayer(moveDistance, 0); // Move right
                     break;
 
                 // Handle jump commands
-                case "jr":
-                case "jumpright":
-                    score += game.movePlayer(2 * m, 0); // Jump right
-                    break;
+                
+                case "jump-left":
                 case "jl":
-                case "jumpleft":
-                    score += game.movePlayer(-2 * m, 0); // Jump left
+                    playerScore += gameGUI.movePlayer(-2 * moveDistance, 0); // Jump left
                     break;
+                case "jump-up":
                 case "ju":
-                case "jumpup":
-                    score += game.movePlayer(0, -2 * m); // Jump up
+                    playerScore += gameGUI.movePlayer(0, -2 * moveDistance); // Jump up
                     break;
+                case "jump-down":
                 case "jd":
-                case "jumpdown":
-                    score += game.movePlayer(0, 2 * m); // Jump down
+                    playerScore += gameGUI.movePlayer(0, 2 * moveDistance); // Jump down
+                    break;
+                case "jump-right":
+                case "jr":
+                    playerScore += gameGUI.movePlayer(2 * moveDistance, 0); // Jump right
                     break;
 
                 // Handle prize pickup
-                case "pickup":
+                case "pick-up":
                 case "p":
-                    score += game.pickupPrize(); // Pick up prize
+                    playerScore += gameGUI.pickupPrize(); // Pick up prize
                     break;
 
                 // Handle trap springing
-                case "springtrap":
+                case "spring-trap":
                     System.out.println("Specify direction (r, l, u, d): ");
-                    String trapDir = in.nextLine().toLowerCase();
-                    if (trapDir.equals("r")) {
-                        score += game.springTrap(m, 0); // Spring trap on right
-                    } else if (trapDir.equals("l")) {
-                        score += game.springTrap(-m, 0); // Spring trap on left
-                    } else if (trapDir.equals("u")) {
-                        score += game.springTrap(0, -m); // Spring trap above
-                    } else if (trapDir.equals("d")) {
-                        score += game.springTrap(0, m); // Spring trap below
+                    String trapDirection = userInput.nextLine().toLowerCase();
+                    if (trapDirection.equals("r")) {
+                        playerScore += gameGUI.springTrap(moveDistance, 0); // Spring trap on right
+                    } else if (trapDirection.equals("l")) {
+                        playerScore += gameGUI.springTrap(-moveDistance, 0); // Spring trap on left
+                    } else if (trapDirection.equals("u")) {
+                        playerScore += gameGUI.springTrap(0, -moveDistance); // Spring trap above
+                    } else if (trapDirection.equals("d")) {
+                        playerScore += gameGUI.springTrap(0, moveDistance); // Spring trap below
                     }
                     break;
 
                 // End the game
                 case "quit":
                 case "q":
-                    play = false;
+                    isPlaying = false;
                     break;
 
                 // Replay the game
                 case "replay":
-                    score += game.replay(); // Reset the board
+                    playerScore += gameGUI.replay(); // Reset the board
                     break;
 
                 // Display help
@@ -98,7 +101,7 @@ public class EscapeRoom {
                 case "?":
                     System.out.println("Commands: r (right), l (left), u (up), d (down)");
                     System.out.println("Jump: jr (right), jl (left), ju (up), jd (down)");
-                    System.out.println("pickup (p), springtrap");
+                    System.out.println("pick-up (p), spring-trap");
                     System.out.println("replay, quit");
                     break;
 
@@ -109,11 +112,11 @@ public class EscapeRoom {
             }
 
             // Display score
-            System.out.println("Score: " + score);
+            System.out.println("Score: " + playerScore);
         }
 
         // Close the scanner
-        in.close();
+        userInput.close();
         System.out.println("Thanks for playing!");
     }
 }
