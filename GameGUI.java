@@ -264,25 +264,27 @@ public class GameGUI extends JComponent
    * <P>
    * @return positive score if a location had a prize to be picked up, otherwise a negative penalty
    */
-  public int pickupPrize()
-  {
+  private int collectedPrizes = 0;
+  public int pickupPrize() {
     double px = playerLoc.getX();
     double py = playerLoc.getY();
 
-    for (Rectangle p: prizes)
-    {
-      // DEBUG: System.out.println("prizex:" + p.getX() + " prizey:" + p.getY() + "\npx: " + px + " py:" + py);
-      // if location has a prize, pick it up
-      if (p.getWidth() > 0 && p.contains(px, py))
-      {
-        System.out.println("YOU PICKED UP A PRIZE!");
-        p.setSize(0,0);
-        repaint();
-        return prizeVal;
-      }
+    for (Rectangle p : prizes) {
+        if (p.getWidth() > 0 && p.contains(px, py)) {
+            System.out.println("YOU PICKED UP A PRIZE!");
+            p.setSize(0, 0); // Prize is picked up
+            collectedPrizes++; // Increment collected prize count
+            repaint();
+            return prizeVal;
+        }
     }
     System.out.println("OOPS, NO PRIZE HERE");
     return -prizeVal;  
+}
+
+  
+  public boolean allPrizesCollected() {
+    return collectedPrizes == totalPrizes;
   }
 
   /**

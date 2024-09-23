@@ -68,6 +68,10 @@ public class EscapeRoom {
                 case "pick-up":
                 case "p":
                     playerScore += gameGUI.pickupPrize(); // Pick up prize
+                    if (gameGUI.allPrizesCollected()) {
+                        System.out.println("You Won the Game!");
+                        isPlaying = false; // End the game
+                    }
                     break;
 
                 // Handle trap springing
