@@ -74,21 +74,6 @@ public class EscapeRoom {
                     }
                     break;
 
-                // Handle trap springing
-                case "spring-trap":
-                    System.out.println("Specify direction (r, l, u, d): ");
-                    String trapDirection = userInput.nextLine().toLowerCase();
-                    if (trapDirection.equals("r")) {
-                        playerScore += gameGUI.springTrap(moveDistance, 0); // Spring trap on right
-                    } else if (trapDirection.equals("l")) {
-                        playerScore += gameGUI.springTrap(-moveDistance, 0); // Spring trap on left
-                    } else if (trapDirection.equals("u")) {
-                        playerScore += gameGUI.springTrap(0, -moveDistance); // Spring trap above
-                    } else if (trapDirection.equals("d")) {
-                        playerScore += gameGUI.springTrap(0, moveDistance); // Spring trap below
-                    }
-                    break;
-
                 // End the game
                 case "quit":
                 case "q":
@@ -105,7 +90,7 @@ public class EscapeRoom {
                 case "?":
                     System.out.println("Commands: r (right), l (left), u (up), d (down)");
                     System.out.println("Jump: jr (right), jl (left), ju (up), jd (down)");
-                    System.out.println("pick-up (p), spring-trap");
+                    System.out.println("pick-up (p)");
                     System.out.println("replay, quit");
                     break;
 
