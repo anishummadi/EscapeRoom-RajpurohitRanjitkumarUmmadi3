@@ -14,6 +14,7 @@ public class EscapeRoom {
         // Size of move and initial player position
         int moveDistance = 60;
         int playerScore = 0;
+        int playerLives = 3;  // Initialize player lives
 
         // Scanner for user input
         Scanner userInput = new Scanner(System.in);
@@ -26,42 +27,59 @@ public class EscapeRoom {
             String userCommand = userInput.nextLine().toLowerCase();
 
             // Handle movement commands
+            int moveResult;
             switch (userCommand) {
                 
                 case "left":
                 case "l":
-                    playerScore += gameGUI.movePlayer(-moveDistance, 0); // Move left
+                    moveResult = gameGUI.movePlayer(-moveDistance, 0); // Move left
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "up":
                 case "u":
-                    playerScore += gameGUI.movePlayer(0, -moveDistance); // Move up
+                    moveResult = gameGUI.movePlayer(0, -moveDistance); // Move up
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "down":
                 case "d":
-                    playerScore += gameGUI.movePlayer(0, moveDistance); // Move down
+                    moveResult = gameGUI.movePlayer(0, moveDistance); // Move down
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "right":
                 case "r":
-                    playerScore += gameGUI.movePlayer(moveDistance, 0); // Move right
+                    moveResult = gameGUI.movePlayer(moveDistance, 0); // Move right
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
 
                 // Handle jump commands
                 
                 case "jump-left":
                 case "jl":
-                    playerScore += gameGUI.movePlayer(-2 * moveDistance, 0); // Jump left
+                    moveResult = gameGUI.movePlayer(-2 * moveDistance, 0); // Jump left
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "jump-up":
                 case "ju":
-                    playerScore += gameGUI.movePlayer(0, -2 * moveDistance); // Jump up
+                    moveResult = gameGUI.movePlayer(0, -2 * moveDistance); // Jump up
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "jump-down":
                 case "jd":
-                    playerScore += gameGUI.movePlayer(0, 2 * moveDistance); // Jump down
+                    moveResult = gameGUI.movePlayer(0, 2 * moveDistance); // Jump down
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
                 case "jump-right":
                 case "jr":
-                    playerScore += gameGUI.movePlayer(2 * moveDistance, 0); // Jump right
+                    moveResult = gameGUI.movePlayer(2 * moveDistance, 0); // Jump right
+                    playerScore += moveResult;
+                    if (moveResult < 0) playerLives--;  // Lose a life if hit trap
                     break;
 
                 // Handle prize pickup
@@ -83,6 +101,7 @@ public class EscapeRoom {
                 // Replay the game
                 case "replay":
                     playerScore += gameGUI.replay(); // Reset the board
+                    playerLives = 3;  // Reset lives
                     break;
 
                 // Display help
@@ -100,8 +119,14 @@ public class EscapeRoom {
                     break;
             }
 
-            // Display score
-            System.out.println("Score: " + playerScore);
+            // Display score and lives
+            System.out.println("Score: " + playerScore + " | Lives: " + playerLives);
+
+            // Check if player has run out of lives
+            if (playerLives <= 0) {
+                System.out.println("Game Over! You've run out of lives.");
+                isPlaying = false;
+            }
         }
 
         // Close the scanner
