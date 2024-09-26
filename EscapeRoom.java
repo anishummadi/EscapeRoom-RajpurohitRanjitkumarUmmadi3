@@ -15,6 +15,7 @@ public class EscapeRoom {
         int moveDistance = 60;
         int playerScore = 0;
         int playerLives = 3;  // Initialize player lives
+        int currentLevel = 1;  // Initialize current level
 
         // Scanner for user input
         Scanner userInput = new Scanner(System.in);
@@ -87,8 +88,11 @@ public class EscapeRoom {
                 case "p":
                     playerScore += gameGUI.pickupPrize(); // Pick up prize
                     if (gameGUI.allPrizesCollected()) {
-                        System.out.println("You Won the Game!");
-                        isPlaying = false; // End the game
+                        System.out.println("Congratulations! You've completed level " + currentLevel + "!");
+                        currentLevel++;
+                        System.out.println("Moving to level " + currentLevel + "...");
+                        gameGUI.createBoard();  // Generate a new map
+                        gameGUI.resetPlayerPosition();  // Reset player position for the new map
                     }
                     break;
 
@@ -100,8 +104,11 @@ public class EscapeRoom {
 
                 // Replay the game
                 case "replay":
-                    playerScore += gameGUI.replay(); // Reset the board
+                    gameGUI.createBoard(); // Reset the board
+                    gameGUI.resetPlayerPosition();
+                    currentLevel = 1;
                     playerLives = 3;  // Reset lives
+                    playerScore = 0;  // Reset score
                     break;
 
                 // Display help
@@ -119,8 +126,8 @@ public class EscapeRoom {
                     break;
             }
 
-            // Display score and lives
-            System.out.println("Score: " + playerScore + " | Lives: " + playerLives);
+            // Display score, lives, and current level
+            System.out.println("Score: " + playerScore + " | Lives: " + playerLives + " | Level: " + currentLevel);
 
             // Check if player has run out of lives
             if (playerLives <= 0) {
@@ -131,6 +138,6 @@ public class EscapeRoom {
 
         // Close the scanner
         userInput.close();
-        System.out.println("Thanks for playing!");
+        System.out.println("Thanks for playing! You reached level " + currentLevel + " with a final score of " + playerScore + ".");
     }
 }

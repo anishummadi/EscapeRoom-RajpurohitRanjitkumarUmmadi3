@@ -29,6 +29,7 @@ import java.util.Random;
  * - Collect prizes for points.
  * - Avoid penalties for hitting walls or going off-grid.
  * - Track player steps and overall performance.
+ * - Support multiple levels with increasing difficulty.
  */
 public class GameGUI extends JComponent
 {
@@ -74,6 +75,9 @@ public class GameGUI extends JComponent
 
   // game frame
   private JFrame frame;
+
+  // current level
+  private int currentLevel;
 
   /**
    * Constructor for the GameGUI class.
@@ -122,10 +126,8 @@ public class GameGUI extends JComponent
     frame.setVisible(true);
     frame.setResizable(false); 
 
-    // set default config
-    totalWalls = 20;
-    totalPrizes = 3;
-    totalTraps = 2;
+    // set default config for level 1
+    setLevel(1);
   }
 
  /**
@@ -142,6 +144,18 @@ public class GameGUI extends JComponent
 
     walls = new Rectangle[totalWalls];
     createWalls();
+  }
+
+  /**
+   * Set the game level and adjust difficulty accordingly.
+   * @param level The level to set
+   */
+  public void setLevel(int level) {
+    currentLevel = level;
+    totalWalls = 15;  // Keep walls constant
+    totalPrizes = 3;  // Keep prizes constant
+    totalTraps = 2 + level;  // Increase traps with each level, starting from 2
+    createBoard();
   }
 
   /**
@@ -370,7 +384,6 @@ public class GameGUI extends JComponent
    */
   public int replay()
   {
-
     int win = playerAtEnd();
   
     // resize prizes and traps to "reactivate" them
@@ -383,6 +396,7 @@ public class GameGUI extends JComponent
     x = START_LOC_X;
     y = START_LOC_Y;
     playerSteps = 0;
+    collectedPrizes = 0;
     repaint();
     return win;
   }
@@ -399,6 +413,18 @@ public class GameGUI extends JComponent
     setVisible(false);
     frame.dispose();
     return win;
+  }
+
+  /**
+   * Reset the player position to the start of the board.
+   */
+  public void resetPlayerPosition() {
+    x = START_LOC_X;
+    y = START_LOC_Y;
+    playerLoc.setLocation(x, y);
+    playerSteps = 0;
+    collectedPrizes = 0;
+    repaint();
   }
 
   /*------------------- public methods not to be called as part of API -------------------*/
